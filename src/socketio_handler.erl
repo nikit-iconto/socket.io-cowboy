@@ -145,7 +145,7 @@ text_headers() ->
      {<<"Expires">>, <<"Sat, 25 Dec 1999 00:00:00 GMT">>},
      {<<"Pragma">>, <<"no-cache">>},
      {<<"Access-Control-Allow-Credentials">>, <<"true">>},
-     {<<"Access-Control-Allow-Origin">>, <<"null">>}].
+     {<<"Access-Control-Allow-Origin">>, <<"*">>}].
 
 reply_messages(Req, Messages, _Config = #config{protocol = Protocol}, SendNop) ->
     Packet = case {SendNop, Messages} of
