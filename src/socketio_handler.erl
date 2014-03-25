@@ -71,6 +71,20 @@ handle(Req, HttpState = #http_state{action = create_session, config = #config{he
     HeartbeatTimeoutBin = list_to_binary(integer_to_list(HeartbeatTimeout div 1000)),
     SessionTimeoutBin = list_to_binary(integer_to_list(SessionTimeout div 1000)),
 
+
+    {SessionIdQs, _} = cowboy_req:qs_val(<<"session_id">>, Req, nil),
+
+    {SessionIdCookie, _} = cowboy_req:cookie(<<"PHPSESSID">>, Req, nil),
+
+    SessionId = case SessionIdQs of
+                  nil -> case SessionIdCookie of
+                           nil -> nil;
+                           B -> B
+                         end;
+                  A -> A
+                end,
+
+
     _Pid = socketio_session:create(Sid, SessionTimeout, Callback, Opts),
 
     Result = <<":", HeartbeatTimeoutBin/binary, ":", SessionTimeoutBin/binary, ":websocket,xhr-polling">>,

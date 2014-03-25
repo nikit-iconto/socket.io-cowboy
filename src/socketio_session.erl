@@ -19,7 +19,7 @@
 -include("socketio_internal.hrl").
 
 %% API
--export([start_link/4, init/0, configure/1, create/4, find/1, pull/2, pull_no_wait/2, poll/1, send/2, recv/2,
+-export([start_link/4, init/0, configure/1, create/5, find/1, pull/2, pull_no_wait/2, poll/1, send/2, recv/2,
          send_message/2, send_obj/2, refresh/1, disconnect/1, unsub_caller/2]).
 
 %% gen_server callbacks
@@ -36,7 +36,8 @@
                 caller,
                 registered,
                 opts,
-                session_state}).
+                session_state,
+                icontoSessionId}).
 
 %%%===================================================================
 %%% API
@@ -54,8 +55,8 @@ init() ->
     _ = ets:new(?ETS, [public, named_table]),
     ok.
 
-create(SessionId, SessionTimeout, Callback, Opts) ->
-    {ok, Pid} = socketio_session_sup:start_child(SessionId, SessionTimeout, Callback, Opts),
+create(SessionId, SessionTimeout, Callback, Opts, IcontoSessionId) ->
+    {ok, Pid} = socketio_session_sup:start_child(SessionId, SessionTimeout, Callback, Opts, IcontoSessionId),
     Pid.
 
 find(SessionId) ->
@@ -104,7 +105,7 @@ start_link(SessionId, SessionTimeout, Callback, Opts) ->
 %%%===================================================================
 
 %%--------------------------------------------------------------------
-init([SessionId, SessionTimeout, Callback, Opts]) ->
+init([SessionId, SessionTimeout, Callback, Opts, IcontoSessionId]) ->
     self() ! register_in_ets,
     TRef = erlang:send_after(SessionTimeout, self(), session_timeout),
     {ok, #state{id = SessionId,
@@ -113,7 +114,8 @@ init([SessionId, SessionTimeout, Callback, Opts]) ->
                 callback = Callback,
                 opts = Opts,
                 session_timeout_tref = TRef,
-                session_timeout = SessionTimeout}}.
+                session_timeout = SessionTimeout,
+                icontoSessionId = IcontoSessionId}}.
 
 %%--------------------------------------------------------------------
 handle_call({pull, Pid, Wait}, _From,  State = #state{messages = Messages, caller = undefined}) ->
