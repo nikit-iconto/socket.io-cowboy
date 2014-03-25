@@ -85,7 +85,7 @@ handle(Req, HttpState = #http_state{action = create_session, config = #config{he
                 end,
 
 
-    _Pid = socketio_session:create(Sid, SessionTimeout, Callback, Opts),
+    _Pid = socketio_session:create(Sid, SessionTimeout, Callback, Opts, SessionId),
 
     Result = <<":", HeartbeatTimeoutBin/binary, ":", SessionTimeoutBin/binary, ":websocket,xhr-polling">>,
     {ok, Req1} = cowboy_req:reply(200, text_headers(), <<Sid/binary, Result/binary>>, Req),
