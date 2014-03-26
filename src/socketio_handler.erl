@@ -72,7 +72,7 @@ handle(Req, HttpState = #http_state{action = create_session, config = #config{he
     SessionTimeoutBin = list_to_binary(integer_to_list(SessionTimeout div 1000)),
 
 
-    {SessionIdQs, _} = cowboy_req:qs_val(<<"session_id">>, Req, nil),
+    {SessionIdQs, _} = cowboy_req:qs_val(<<"sid">>, Req, nil),
 
     {SessionIdCookie, _} = cowboy_req:cookie(<<"PHPSESSID">>, Req, nil),
 
@@ -83,7 +83,6 @@ handle(Req, HttpState = #http_state{action = create_session, config = #config{he
                          end;
                   A -> A
                 end,
-
 
     _Pid = socketio_session:create(Sid, SessionTimeout, Callback, Opts, SessionId),
 
