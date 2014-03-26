@@ -88,6 +88,8 @@ handle(Req, HttpState = #http_state{action = create_session, config = #config{he
                   A -> A
                 end,
 
+%%     TODO make proper test of SessionId
+
     _Pid = socketio_session:create(Sid, SessionTimeout, Callback, Opts, SessionId),
 
     Result = <<":", HeartbeatTimeoutBin/binary, ":", SessionTimeoutBin/binary, ":websocket,xhr-polling">>,
