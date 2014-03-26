@@ -19,7 +19,7 @@
 -include("socketio_internal.hrl").
 
 %% API
--export([start_link/4, init/0, configure/1, create/5, find/1, pull/2, pull_no_wait/2, poll/1, send/2, recv/2,
+-export([start_link/5, init/0, configure/1, create/5, find/1, pull/2, pull_no_wait/2, poll/1, send/2, recv/2,
          send_message/2, send_obj/2, refresh/1, disconnect/1, unsub_caller/2]).
 
 %% gen_server callbacks
