@@ -72,9 +72,13 @@ handle(Req, HttpState = #http_state{action = create_session, config = #config{he
     SessionTimeoutBin = list_to_binary(integer_to_list(SessionTimeout div 1000)),
 
 
-    {SessionIdQs, _} = cowboy_req:qs_val(<<"sid">>, Req, nil),
 
-    {SessionIdCookie, _} = cowboy_req:cookie(<<"PHPSESSID">>, Req, nil),
+    {ok, SessionQSName} = application:get_env(socketio, session_qs_name),
+    {ok, SessionCookieName} = application:get_env(socketio, session_cookie_name),
+
+    {SessionIdQs, _} = cowboy_req:qs_val(SessionQSName, Req, nil),
+
+    {SessionIdCookie, _} = cowboy_req:cookie(SessionCookieName, Req, nil),
 
     SessionId = case SessionIdQs of
                   nil -> case SessionIdCookie of
