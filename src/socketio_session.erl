@@ -180,10 +180,10 @@ handle_cast(_Msg, State) ->
 handle_info(session_timeout, State) ->
     {stop, normal, State};
 
-handle_info(register_in_ets, State = #state{id = SessionId, registered = false, callback = Callback, opts = Opts}) ->
+handle_info(register_in_ets, State = #state{id = SessionId, registered = false, callback = Callback, opts = Opts, icontoSessionId = IcontoSessionId}) ->
     case ets:insert_new(?ETS, {SessionId, self()}) of
         true ->
-            case Callback:open(self(), SessionId, Opts) of
+            case Callback:open(self(), SessionId, [{iContoSessionId, IcontoSessionId} | Opts]) of
                 {ok, SessionState} ->
                     send(self(), {connect, <<>>}),
                     {noreply, State#state{registered = true, session_state = SessionState}};
