@@ -6,3 +6,5 @@ deps
 *.beam
 *.plt
 *.dump
+socketio.iml
+.idea/*
