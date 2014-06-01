@@ -107,6 +107,7 @@ decode_packet(<<"0::", EndPoint/binary>>) -> {disconnect, EndPoint};
 %% Incomplete, needs to handle queries
 decode_packet(<<"1::", EndPoint/binary>>) -> {connect, EndPoint};
 decode_packet(<<"2::">>) -> heartbeat;
+decode_packet(<<"2:::">>) -> heartbeat;
 decode_packet(<<"3:", Rest/binary>>) ->
     {Id, R1} = id(Rest),
     {EndPoint, Data} = endpoint(R1),
@@ -122,7 +123,8 @@ decode_packet(<<"7::", Rest/binary>>) ->
             {error, EndPoint, Reason, Advice};
         Reason ->
             {error, EndPoint, Reason}
-    end.
+    end;
+decode_packet(_) -> disconnect.
 
 id(X) -> id(X, "").
 id(<<$:, Rest/binary>>, "") ->
